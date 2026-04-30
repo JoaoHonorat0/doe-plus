@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOE+ | Conectando Doadores a ONGs</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Primary — terracota quente */
+  --green: #C2729A;
+  --green-dark: #9a4e78;
+  --green-light: #f5e0ed;
+  --green-glow: rgba(194,114,154,0.28);
+
+  /* Lilás — cor destaque principal */
+  --lilas: #A67CC5;
+  --lilas-dark: #7c54a0;
+  --lilas-light: #ede0f8;
+  --lilas-glow: rgba(166,124,197,0.28);
+
+  /* Fundos escuros com toque roxo */
+  --navy: #1E1428;
+  --navy-soft: #2a1c38;
+  --navy-card: #342248;
+
+  /* Claros e neutros */
+  --cream: #FAF5FF;
+  --coral: #E85A8A;
+  --gray: #9585aa;
+  --gray-light: #ede8f5;
+  --white: #ffffff;
+
+  --shadow: 0 4px 32px rgba(30,20,40,0.10);
+  --shadow-lg: 0 16px 64px rgba(30,20,40,0.18);
+  --radius: 24px;
+  --radius-sm: 14px;
+
+  /* Extras */
+  --peach: #f9d6e8;
+  --amber: #C27EB0;
+  --amber-light: #fceaf5;
+  --warm-brown: #7a4a6a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--navy);
+  overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 5%;
+  height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(30,20,40,0.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(166,124,197,0.12);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px; font-weight: 800;
+  color: var(--green);
+  letter-spacing: -1px;
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none; font-size: 14px; font-weight: 500;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--green); }
+.nav-cta {
+  background: var(--lilas);
+  color: white;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 14px;
+  padding: 10px 22px; border-radius: 50px;
+  text-decoration: none; transition: all .2s;
+  border: none; cursor: pointer;
+}
+.nav-cta:hover { transform: scale(1.04); box-shadow: 0 0 20px rgba(166,124,197,0.5); }
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+.nav-hamburger span { width: 24px; height: 2px; background: white; border-radius: 2px; transition: all .3s; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  background: var(--navy);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 120px 8% 80px;
+  gap: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(166,124,197,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 15% 80%, rgba(194,114,154,0.12) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.03;
+  background-image: linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-left { position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(166,124,197,0.16);
+  border: 1px solid rgba(166,124,197,0.35);
+  padding: 6px 16px; border-radius: 50px;
+  font-size: 13px; font-weight: 600; color: #c9a0e8;
+  margin-bottom: 24px;
+  animation: fadeUp .6s ease both;
+}
+.hero-badge::before { content: '●'; font-size: 8px; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(40px, 5vw, 68px);
+  font-weight: 800;
+  color: white;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero-title .accent { color: var(--green); }
+.hero-title .line2 { display: block; }
+
+.hero-desc {
+  font-size: 17px; line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+  max-width: 480px; margin-bottom: 40px;
+  animation: fadeUp .6s .2s ease both;
+}
+
+.hero-actions {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  animation: fadeUp .6s .3s ease both;
+}
+.btn-primary {
+  background: var(--lilas);
+  color: white;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+  padding: 16px 32px; border-radius: 50px; border: none; cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  transition: all .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(166,124,197,0.5); }
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  color: white; border: 1px solid rgba(255,255,255,0.15);
+  font-family: 'Syne', sans-serif; font-weight: 600; font-size: 15px;
+  padding: 16px 32px; border-radius: 50px; cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  transition: all .2s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+
+.hero-stats {
+  display: flex; gap: 32px; margin-top: 48px;
+  animation: fadeUp .6s .4s ease both;
+}
+.hero-stat {}
+.hero-stat-num {
+  font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+  color: white;
+}
+.hero-stat-num span { color: var(--green); }
+.hero-stat-label { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+/* Hero right — phone mockup */
+.hero-right {
+  position: relative; z-index: 1;
+  display: flex; justify-content: center; align-items: center;
+  animation: fadeUp .6s .2s ease both;
+}
+.phone-mockup {
+  width: 300px;
+  background: var(--navy-soft);
+  border-radius: 40px;
+  padding: 16px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), 0 0 60px rgba(46,204,113,0.1);
+  position: relative;
+}
+.phone-screen {
+  background: var(--cream);
+  border-radius: 28px;
+  overflow: hidden;
+  height: 520px;
+}
+.mock-header {
+  background: var(--navy);
+  padding: 18px 16px 24px;
+}
+.mock-logo { font-family:'Syne',sans-serif; font-weight:800; color:var(--green); font-size:20px; }
+.mock-greeting { color:rgba(255,255,255,.5); font-size:11px; margin-top:12px; }
+.mock-name { color:white; font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+.mock-search {
+  background:rgba(255,255,255,.1); border-radius:10px; padding:8px 12px;
+  color:rgba(255,255,255,.4); font-size:12px; margin-top:10px;
+}
+.mock-body { padding: 12px; }
+.mock-banner {
+  background: var(--navy); border-radius:14px; padding:14px;
+  margin-bottom:10px; border:1px solid rgba(46,204,113,.2);
+}
+.mock-banner-tag { color:var(--green); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.mock-banner-title { color:white; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin:4px 0; }
+.mock-banner-sub { color:rgba(255,255,255,.4); font-size:10px; }
+.mock-card {
+  background:white; border-radius:12px; padding:10px;
+  display:flex; gap:8px; align-items:flex-start; margin-bottom:8px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+.mock-ava { width:36px;height:36px; border-radius:10px; display:flex;align-items:center;justify-content:center; font-size:18px; flex-shrink:0; }
+.mock-cname { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; }
+.mock-cloc { font-size:10px; color:var(--gray); }
+.mock-tag { display:inline-block; font-size:9px; padding:2px 7px; border-radius:50px; font-weight:600; margin-top:4px; background:var(--lilas-light); color:var(--lilas-dark); }
+.mock-prog { height:4px; background:var(--gray-light); border-radius:4px; margin-top:6px; overflow:hidden; }
+.mock-prog-fill { height:100%; background:linear-gradient(90deg,#A67CC5,#C2729A); border-radius:4px; }
+.phone-notch-top {
+  position:absolute; top:16px; left:50%; transform:translateX(-50%);
+  width:80px; height:22px; background:#000; border-radius:12px; z-index:10;
+}
+.float-orb {
+  position:absolute; border-radius:50%;
+  animation: float 6s ease-in-out infinite;
+}
+.orb1 { width:180px;height:180px; background:radial-gradient(circle,rgba(166,124,197,.22),transparent 70%); top:-60px;right:-60px; }
+.orb2 { width:120px;height:120px; background:radial-gradient(circle,rgba(194,114,154,.16),transparent 70%); bottom:-40px;left:-40px; animation-delay:-3s; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── SECTION BASE ── */
+section { padding: 100px 8%; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+  color: var(--green); margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 3.5vw, 46px);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 17px; color: var(--gray); line-height: 1.7;
+  max-width: 520px;
+}
+
+/* ── STATS BAR ── */
+#stats {
+  background: #231530;
+  padding: 48px 8%;
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.stat-item {
+  padding: 32px 24px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Syne', sans-serif; font-size: 44px; font-weight: 800;
+  color: white; letter-spacing: -2px;
+}
+.stat-num .green { color: #c9a0e8; }
+.stat-lbl { font-size: 14px; color: rgba(255,255,255,0.4); margin-top: 6px; }
+
+/* ── HOW IT WORKS ── */
+#how { background: var(--cream); }
+.how-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 24px; margin-top: 64px;
+}
+.how-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 36px 32px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s, box-shadow .3s;
+  border: 2px solid transparent;
+}
+.how-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--lilas-light); }
+.how-num {
+  font-family: 'Syne', sans-serif; font-size: 80px; font-weight: 800;
+  color: var(--lilas-light); line-height: 1;
+  position: absolute; top: -10px; right: 20px;
+  pointer-events: none;
+}
+.how-icon { font-size: 40px; margin-bottom: 20px; }
+.how-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+.how-desc { font-size: 15px; color: var(--gray); line-height: 1.7; }
+
+/* ── ONGs ── */
+#ongs { background: #1e1430; }
+#ongs .section-title { color: white; }
+#ongs .section-desc { color: rgba(255,255,255,0.45); }
+.ongs-filter {
+  display: flex; gap: 10px; flex-wrap: wrap; margin: 40px 0 32px;
+}
+.filter-btn {
+  padding: 9px 18px; border-radius: 50px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 2px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5); background: transparent;
+  transition: all .2s; font-family: 'DM Sans', sans-serif;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: var(--lilas); color: white;
+  border-color: var(--lilas);
+}
+.ongs-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+.ong-card {
+  background: var(--navy-card);
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 2px solid rgba(255,255,255,0.06);
+  transition: all .3s; cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.ong-card::before {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(166,124,197,0.08) 0%, transparent 60%);
+  opacity:0; transition: opacity .3s;
+}
+.ong-card:hover { border-color: rgba(166,124,197,0.4); transform: translateY(-4px); }
+.ong-card:hover::before { opacity:1; }
+.ong-top { display:flex; gap:14px; align-items:flex-start; margin-bottom:16px; }
+.ong-avatar { width:52px;height:52px; border-radius:14px; display:flex;align-items:center;justify-content:center; font-size:24px; flex-shrink:0; }
+.ong-name { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:white; margin-bottom:4px; }
+.ong-loc { font-size:12px; color:var(--gray); }
+.ong-verified { font-size:14px; margin-left:auto; }
+.ong-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.tag {
+  font-size:11px; padding:4px 10px; border-radius:50px; font-weight:600;
+}
+.tag-g { background:rgba(166,124,197,.18); color:#7c54a0; }
+.tag-r { background:rgba(194,114,154,.18); color:#9a4e78; }
+.tag-b { background:rgba(192,160,220,.18); color:#6a3e8a; }
+.ong-prog-wrap { margin-bottom:16px; }
+.prog-info { display:flex; justify-content:space-between; font-size:12px; color:var(--gray); margin-bottom:6px; }
+.prog-pct { color:var(--lilas); font-weight:700; }
+.prog-bar { height:6px; background:rgba(255,255,255,.08); border-radius:10px; overflow:hidden; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--lilas),var(--green)); border-radius:10px; transition:width 1s ease; }
+.ong-btn {
+  width:100%; padding:11px; border-radius:12px; border:1px solid rgba(166,124,197,.45);
+  background:transparent; color:var(--lilas); font-family:'Syne',sans-serif; font-weight:700;
+  font-size:13px; cursor:pointer; transition:all .2s;
+}
+.ong-btn:hover { background:var(--lilas); color:white; }
+
+/* ── DONATE SECTION ── */
+#doar { background: var(--cream); }
+.donate-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: start; margin-top: 64px;
+}
+.donate-left {}
+.donate-tabs {
+  display: flex; background: white; border-radius: 16px; padding: 4px;
+  box-shadow: var(--shadow); margin-bottom: 24px;
+}
+.dtab {
+  flex:1; padding:13px; text-align:center; border-radius:12px;
+  font-size:13px; font-weight:600; cursor:pointer; transition:all .2s;
+  color:var(--gray); border:none; background:none; font-family:'DM Sans',sans-serif;
+}
+.dtab.active { background:var(--navy); color:#c9a0e8; }
+.donate-form { background:white; border-radius:var(--radius); padding:32px; box-shadow:var(--shadow); }
+.flabel { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--navy); margin-bottom:8px; display:block; letter-spacing:.5px; text-transform:uppercase; }
+.fgroup { margin-bottom:20px; }
+.finput {
+  width:100%; padding:14px 16px; border:2px solid var(--gray-light);
+  border-radius:var(--radius-sm); font-size:15px; font-family:'DM Sans',sans-serif;
+  color:var(--navy); outline:none; transition:border-color .2s; background:white;
+  appearance:none;
+}
+.finput:focus { border-color:var(--lilas); }
+.amount-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px; }
+.amt-btn {
+  padding:14px 8px; border:2px solid var(--gray-light); border-radius:var(--radius-sm);
+  background:white; font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
+  color:var(--navy); cursor:pointer; transition:all .2s; text-align:center;
+}
+.amt-btn.active, .amt-btn:hover { border-color:var(--lilas); background:var(--lilas-light); color:var(--lilas-dark); }
+.impact-box {
+  background:var(--navy); border-radius:14px; padding:16px 20px;
+  display:flex; gap:14px; align-items:center; margin-bottom:24px;
+}
+.impact-box-icon { font-size:28px; }
+.impact-box-text { font-size:13px; color:rgba(255,255,255,.65); line-height:1.6; }
+.impact-box-text strong { color:#c9a0e8; }
+.submit-btn {
+  width:100%; background:var(--lilas); color:white;
+  font-family:'Syne',sans-serif; font-weight:800; font-size:16px;
+  padding:18px; border-radius:16px; border:none; cursor:pointer;
+  box-shadow:0 8px 24px rgba(166,124,197,.4); transition:all .2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  letter-spacing:.3px;
+}
+.submit-btn:hover { transform:translateY(-2px); box-shadow:0 14px 36px rgba(166,124,197,.5); }
+
+.donate-right {}
+.impact-card {
+  background:var(--navy); border-radius:var(--radius); padding:32px;
+  color:white; margin-bottom:20px;
+}
+.impact-card-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:20px; }
+.impact-row {
+  display:flex; align-items:center; gap:14px; padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.impact-row:last-child { border-bottom:none; }
+.impact-ico { font-size:24px; flex-shrink:0; }
+.impact-info { flex:1; }
+.impact-title { font-size:14px; font-weight:600; }
+.impact-sub { font-size:12px; color:rgba(255,255,255,.4); margin-top:2px; }
+.impact-val { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; color:#c9a0e8; }
+
+.trust-card {
+  background:white; border-radius:var(--radius); padding:28px;
+  box-shadow:var(--shadow);
+}
+.trust-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:16px; }
+.trust-item { display:flex; gap:12px; align-items:center; padding:10px 0; border-bottom:1px solid var(--gray-light); }
+.trust-item:last-child { border-bottom:none; }
+.trust-ico { font-size:20px; }
+.trust-text { font-size:14px; color:var(--gray); }
+.trust-text strong { color:var(--navy); }
+
+/* ── TESTIMONIAL ── */
+#depoimentos { background:var(--cream); }
+.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:64px; }
+.testi-card {
+  background:white; border-radius:var(--radius); padding:32px;
+  box-shadow:var(--shadow); transition:transform .3s;
+  border-left:4px solid var(--lilas);
+}
+.testi-card:hover { transform:translateY(-4px); }
+.testi-quote { font-size:15px; line-height:1.75; color:var(--gray); font-style:italic; margin-bottom:24px; }
+.testi-quote::before { content:'"'; font-family:'Syne',sans-serif; font-size:48px; color:var(--lilas-light); line-height:0; vertical-align:-20px; margin-right:4px; }
+.testi-person { display:flex; align-items:center; gap:12px; }
+.testi-ava { width:44px;height:44px; border-radius:50%; display:flex;align-items:center;justify-content:center; font-size:22px; background:var(--lilas-light); }
+.testi-name { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+.testi-role { font-size:12px; color:var(--gray); }
+
+/* ── CTA BANNER ── */
+#cta {
+  background: #1E1428;
+  padding: 100px 8%;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+#cta::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(166,124,197,0.16) 0%, transparent 70%);
+}
+.cta-inner { position:relative; z-index:1; max-width:680px; margin:0 auto; }
+.cta-title {
+  font-family:'Syne',sans-serif; font-size:clamp(32px,5vw,56px); font-weight:800;
+  color:white; letter-spacing:-2px; line-height:1.05; margin-bottom:20px;
+}
+.cta-title .accent { color:var(--green); }
+.cta-desc { font-size:17px; color:rgba(255,255,255,.5); margin-bottom:40px; line-height:1.7; }
+.cta-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+/* ── FOOTER ── */
+footer {
+  background: #120c1c;
+  padding: 64px 8% 32px;
+}
+.footer-top {
+  display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; margin-bottom:48px;
+}
+.footer-logo { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--green); margin-bottom:12px; }
+.footer-desc { font-size:14px; color:rgba(255,255,255,.35); line-height:1.7; max-width:260px; }
+.footer-col-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:white; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+.footer-links { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-links a { color:rgba(255,255,255,.35); text-decoration:none; font-size:14px; transition:color .2s; }
+.footer-links a:hover { color:var(--green); }
+.footer-bottom {
+  border-top:1px solid rgba(255,255,255,.06);
+  padding-top:24px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.footer-copy { font-size:13px; color:rgba(255,255,255,.25); }
+.footer-badges { display:flex; gap:10px; }
+.footer-badge {
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+  padding:5px 12px; border-radius:50px; font-size:11px; color:rgba(255,255,255,.3);
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px);
+  z-index:200; display:flex; align-items:center; justify-content:center;
+  padding:20px; opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background:white; border-radius:var(--radius); padding:40px; max-width:480px; width:100%;
+  transform:scale(.95) translateY(20px); transition:all .3s;
+  max-height:90vh; overflow-y:auto;
+}
+.modal-overlay.open .modal { transform:scale(1) translateY(0); }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
+.modal-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; }
+.modal-close { background:none; border:none; font-size:24px; cursor:pointer; color:var(--gray); padding:4px; }
+.success-modal { text-align:center; padding:20px 0; }
+.success-icon { font-size:64px; margin-bottom:16px; animation: pop .4s cubic-bezier(.175,.885,.32,1.275); }
+@keyframes pop { from{transform:scale(0)} to{transform:scale(1)} }
+.success-title { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; margin-bottom:8px; }
+.success-desc { color:var(--gray); font-size:15px; line-height:1.6; }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:32px; right:32px; z-index:300;
+  background:var(--navy); color:white; padding:14px 20px;
+  border-radius:14px; font-size:14px; font-weight:500;
+  border-left:4px solid var(--green);
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
+  transform:translateY(80px); opacity:0; transition:all .4s;
+  display:flex; align-items:center; gap:10px;
+}
+
+#how .section-tag, #doar .section-tag, #depoimentos .section-tag { color: var(--green-dark); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  #hero { grid-template-columns:1fr; text-align:center; }
+  .hero-desc { margin:0 auto 40px; }
+  .hero-actions { justify-content:center; }
+  .hero-stats { justify-content:center; }
+  .hero-right { display:none; }
+  .how-grid { grid-template-columns:1fr 1fr; }
+  .ongs-grid { grid-template-columns:1fr 1fr; }
+  .donate-layout { grid-template-columns:1fr; }
+  .testi-grid { grid-template-columns:1fr 1fr; }
+  .footer-top { grid-template-columns:1fr 1fr; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:640px){
+  section { padding:64px 5%; }
+  #hero { padding:100px 5% 64px; }
+  .how-grid { grid-template-columns:1fr; }
+  .ongs-grid { grid-template-columns:1fr; }
+  .testi-grid { grid-template-columns:1fr; }
+  .footer-top { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .hero-stats { flex-direction:column; gap:16px; }
+  .amount-grid { grid-template-columns:repeat(3,1fr); }
+  .cta-btns { flex-direction:column; align-items:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">DOE+</a>
+  <ul class="nav-links">
+    <li><a href="#how">Como funciona</a></li>
+    <li><a href="#ongs">ONGs</a></li>
+    <li><a href="#doar">Fazer doação</a></li>
+  </ul>
+  <a href="#doar" class="nav-cta">Quero Doar 💚</a>
+  <button class="nav-hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-left">
+    <div class="hero-badge">● Plataforma verificada e segura</div>
+    <h1 class="hero-title">
+      Doe com <span class="accent">propósito,</span>
+      <span class="line2">transforme vidas.</span>
+    </h1>
+    <p class="hero-desc">O DOE+ conecta doadores a ONGs verificadas em todo o Brasil. Transparência total, processo simples e impacto real — do seu clique à vida de quem precisa.</p>
+    <div class="hero-actions">
+      <a href="#doar" class="btn-primary">💚 Fazer minha doação</a>
+      <a href="#ongs" class="btn-ghost">Ver ONGs cadastradas →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">247<span>+</span></div>
+        <div class="hero-stat-label">ONGs cadastradas</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">18<span>k</span></div>
+        <div class="hero-stat-label">Doadores ativos</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">R$920<span>k</span></div>
+        <div class="hero-stat-label">Arrecadados</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="float-orb orb1"></div>
+    <div class="float-orb orb2"></div>
+    <div class="phone-mockup">
+      <div class="phone-notch-top"></div>
+      <div class="phone-screen">
+        <div class="mock-header">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="mock-logo">DOE+</div>
+            <div style="font-size:18px;">🔔</div>
+          </div>
+          <div class="mock-greeting">Olá, doador! 👋</div>
+          <div class="mock-name">Onde sua ajuda chega mais longe</div>
+          <div class="mock-search">🔍 Buscar ONGs ou causas...</div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-banner">
+            <div class="mock-banner-tag">⚡ Urgente</div>
+            <div class="mock-banner-title">Casa Áurea dos Velhinhos</div>
+            <div class="mock-banner-sub">Salto de Pirapora · 68% da meta</div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-ava" style="background:#e8f5e9;">🏡</div>
+            <div style="flex:1">
+              <div class="mock-cname">Lar Criança Feliz</div>
+              <div class="mock-cloc">📍 Salto de Pirapora</div>
+              <div class="mock-tag">Crianças</div>
+              <div class="mock-prog"><div class="mock-prog-fill" style="width:82%"></div></div>
+            </div>
+            <div style="font-size:14px;">✅</div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-ava" style="background:#fff3e0;">🌅</div>
+            <div style="flex:1">
+              <div class="mock-cname">Casa Áurea dos Velhinhos</div>
+              <div class="mock-cloc">📍 Salto de Pirapora</div>
+              <div class="mock-tag">Idosos</div>
+              <div class="mock-prog"><div class="mock-prog-fill" style="width:68%"></div></div>
+            </div>
+            <div style="font-size:14px;">✅</div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-ava" style="background:#fce4ec;">🤝</div>
+            <div style="flex:1">
+              <div class="mock-cname">Banco de Alimentos</div>
+              <div class="mock-cloc">📍 Sorocaba</div>
+              <div class="mock-tag">Alimentação</div>
+              <div class="mock-prog"><div class="mock-prog-fill" style="width:45%"></div></div>
+            </div>
+            <div style="font-size:14px;">✅</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">815<span class="green">k</span></div>
+      <div class="stat-lbl">ONGs no Brasil (TAM)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">50<span class="green">k</span></div>
+      <div class="stat-lbl">ONGs em São Paulo (SAM)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100<span class="green">%</span></div>
+      <div class="stat-lbl">Das doações vão para a ONG</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num"><span class="green">0</span> fraudes</div>
+      <div class="stat-lbl">Todas as ONGs são verificadas</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-tag">✦ Como funciona</div>
+  <h2 class="section-title">Simples, rápido<br>e transparente</h2>
+  <p class="section-desc">Em menos de 2 minutos você conecta sua doação à causa certa. Sem burocracia, sem dúvidas.</p>
+
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">01</div>
+      <div class="how-icon">🔍</div>
+      <h3 class="how-title">Encontre uma ONG</h3>
+      <p class="how-desc">Filtre por categoria — alimentação, educação, saúde, crianças, idosos e mais. Todas verificadas pelo DOE+.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">02</div>
+      <div class="how-icon">💚</div>
+      <h3 class="how-title">Escolha como doar</h3>
+      <p class="how-desc">Doe materiais (roupas, alimentos, brinquedos), dinheiro via Pix/cartão ou configure uma doação recorrente.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">03</div>
+      <div class="how-icon">📊</div>
+      <h3 class="how-title">Acompanhe o impacto</h3>
+      <p class="how-desc">Receba relatórios de impacto mostrando exatamente como sua doação foi usada. Transparência total.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ONGs -->
+<section id="ongs">
+  <div class="section-tag" style="color:var(--green);">✦ ONGs em destaque</div>
+  <h2 class="section-title" style="color:white;">Escolha a sua causa</h2>
+  <p class="section-desc">Todas as organizações passam por curadoria rigorosa antes de serem listadas na plataforma.</p>
+
+  <div class="ongs-filter">
+    <button class="filter-btn active" onclick="filterOngs(this,'all')">🌟 Todas</button>
+    <button class="filter-btn" onclick="filterOngs(this,'criancas')">👶 Crianças</button>
+    <button class="filter-btn" onclick="filterOngs(this,'idosos')">👴 Idosos</button>
+    <button class="filter-btn" onclick="filterOngs(this,'alimentacao')">🍽️ Alimentação</button>
+    <button class="filter-btn" onclick="filterOngs(this,'roupas')">👕 Roupas</button>
+  </div>
+
+  <div class="ongs-grid" id="ongs-grid">
+
+    <div class="ong-card" data-cat="criancas">
+      <div class="ong-top">
+        <div class="ong-avatar" style="background:#1a3a2a;">🏡</div>
+        <div style="flex:1">
+          <div class="ong-name">Lar Criança Feliz</div>
+          <div class="ong-loc">📍 Salto de Pirapora, SP</div>
+        </div>
+        <div class="ong-verified">✅</div>
+      </div>
+      <div class="ong-tags">
+        <span class="tag tag-g">Crianças</span>
+        <span class="tag tag-r">Urgente</span>
+      </div>
+      <div class="ong-prog-wrap">
+        <div class="prog-info"><span>Meta mensal</span><span class="prog-pct">82%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:82%"></div></div>
+      </div>
+      <button class="ong-btn" onclick="openDonate('Lar Criança Feliz')">Quero Doar →</button>
+    </div>
+
+    <div class="ong-card" data-cat="idosos roupas">
+      <div class="ong-top">
+        <div class="ong-avatar" style="background:#3a2a1a;">🌅</div>
+        <div style="flex:1">
+          <div class="ong-name">Casa Áurea dos Velhinhos</div>
+          <div class="ong-loc">📍 Salto de Pirapora, SP</div>
+        </div>
+        <div class="ong-verified">✅</div>
+      </div>
+      <div class="ong-tags">
+        <span class="tag tag-b">Idosos</span>
+        <span class="tag tag-g">Roupas</span>
+      </div>
+      <div class="ong-prog-wrap">
+        <div class="prog-info"><span>Campanha de inverno</span><span class="prog-pct">68%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:68%"></div></div>
+      </div>
+      <button class="ong-btn" onclick="openDonate('Casa Áurea dos Velhinhos')">Quero Doar →</button>
+    </div>
+
+    <div class="ong-card" data-cat="alimentacao">
+      <div class="ong-top">
+        <div class="ong-avatar" style="background:#3a1a1a;">🤝</div>
+        <div style="flex:1">
+          <div class="ong-name">Banco de Alimentos Sorocaba</div>
+          <div class="ong-loc">📍 Sorocaba, SP</div>
+        </div>
+        <div class="ong-verified">✅</div>
+      </div>
+      <div class="ong-tags">
+        <span class="tag tag-r">Alimentação</span>
+        <span class="tag tag-b">Famílias</span>
+      </div>
+      <div class="ong-prog-wrap">
+        <div class="prog-info"><span>Cesta básica</span><span class="prog-pct">45%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:45%"></div></div>
+      </div>
+      <button class="ong-btn" onclick="openDonate('Banco de Alimentos Sorocaba')">Quero Doar →</button>
+    </div>
+
+    <div class="ong-card" data-cat="criancas alimentacao">
+      <div class="ong-top">
+        <div class="ong-avatar" style="background:#1a2a3a;">📚</div>
+        <div style="flex:1">
+          <div class="ong-name">Instituto Educar Mais</div>
+          <div class="ong-loc">📍 Sorocaba, SP</div>
+        </div>
+        <div class="ong-verified">✅</div>
+      </div>
+      <div class="ong-tags">
+        <span class="tag tag-g">Educação</span>
+        <span class="tag tag-g">Crianças</span>
+      </div>
+      <div class="ong-prog-wrap">
+        <div class="prog-info"><span>Material escolar</span><span class="prog-pct">91%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:91%"></div></div>
+      </div>
+      <button class="ong-btn" onclick="openDonate('Instituto Educar Mais')">Quero Doar →</button>
+    </div>
+
+    <div class="ong-card" data-cat="roupas">
+      <div class="ong-top">
+        <div class="ong-avatar" style="background:#2a1a3a;">👗</div>
+        <div style="flex:1">
+          <div class="ong-name">Moda Solidária</div>
+          <div class="ong-loc">📍 Itu, SP</div>
+        </div>
+        <div class="ong-verified">✅</div>
+      </div>
+      <div class="ong-tags">
+        <span class="tag tag-b">Roupas</span>
+        <span class="tag tag-g">Famílias</span>
+      </div>
+      <div class="ong-prog-wrap">
+        <div class="prog-info"><span>Campanha de inverno</span><span class="prog-pct">57%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:57%"></div></div>
+      </div>
+      <button class="ong-btn" onclick="openDonate('Moda Solidária')">Quero Doar →</button>
+    </div>
+
+    <div class="ong-card" data-cat="idosos alimentacao">
+      <div class="ong-top">
+        <div class="ong-avatar" style="background:#1a3a3a;">🌱</div>
+        <div style="flex:1">
+          <div class="ong-name">Vida Plena</div>
+          <div class="ong-loc">📍 Votorantim, SP</div>
+        </div>
+        <div class="ong-verified">✅</div>
+      </div>
+      <div class="ong-tags">
+        <span class="tag tag-b">Idosos</span>
+        <span class="tag tag-r">Saúde</span>
+      </div>
+      <div class="ong-prog-wrap">
+        <div class="prog-info"><span>Medicamentos</span><span class="prog-pct">34%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:34%"></div></div>
+      </div>
+      <button class="ong-btn" onclick="openDonate('Vida Plena')">Quero Doar →</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- DONATE -->
+<section id="doar">
+  <div class="section-tag">✦ Fazer doação</div>
+  <h2 class="section-title">Sua doação,<br>do seu jeito</h2>
+
+  <div class="donate-layout">
+    <div class="donate-left">
+      <div class="donate-tabs">
+        <button class="dtab active" onclick="switchTab(this,'mat')">Materiais</button>
+        <button class="dtab" onclick="switchTab(this,'din')">Dinheiro</button>
+      </div>
+
+      <!-- Materiais -->
+      <div class="donate-form" id="tab-mat">
+        <div class="fgroup">
+          <label class="flabel">Para qual ONG?</label>
+          <select class="finput" id="ong-select-mat">
+            <option>Lar Criança Feliz</option>
+            <option>Casa Áurea dos Velhinhos</option>
+            <option>Banco de Alimentos Sorocaba</option>
+            <option>Instituto Educar Mais</option>
+            <option>Moda Solidária</option>
+            <option>Vida Plena</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">O que deseja doar?</label>
+          <select class="finput">
+            <option>Agasalhos e cobertores</option>
+            <option>Alimentos não perecíveis</option>
+            <option>Roupas em geral</option>
+            <option>Higiene pessoal</option>
+            <option>Brinquedos</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Quantidade / descrição</label>
+          <input class="finput" type="text" placeholder="Ex: 3 cobertores tamanho casal">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Como prefere entregar?</label>
+          <select class="finput">
+            <option>Levar pessoalmente</option>
+            <option>Enviar pelos Correios</option>
+            <option>Ponto de coleta parceiro</option>
+          </select>
+        </div>
+        <button class="submit-btn" onclick="confirmDonate('materiais')">Confirmar Doação de Materiais</button>
+      </div>
+
+      <!-- Dinheiro -->
+      <div class="donate-form" id="tab-din" style="display:none;">
+        <div class="fgroup">
+          <label class="flabel">Para qual ONG?</label>
+          <select class="finput" id="ong-select-din">
+            <option>Lar Criança Feliz</option>
+            <option>Casa Áurea dos Velhinhos</option>
+            <option>Banco de Alimentos Sorocaba</option>
+            <option>Instituto Educar Mais</option>
+            <option>Moda Solidária</option>
+            <option>Vida Plena</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Escolha o valor</label>
+          <div class="amount-grid">
+            <button class="amt-btn" onclick="selectAmt(this)">R$10</button>
+            <button class="amt-btn active" onclick="selectAmt(this)">R$25</button>
+            <button class="amt-btn" onclick="selectAmt(this)">R$50</button>
+            <button class="amt-btn" onclick="selectAmt(this)">R$100</button>
+            <button class="amt-btn" onclick="selectAmt(this)">R$200</button>
+            <button class="amt-btn" onclick="selectAmt(this)">Outro</button>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Forma de pagamento</label>
+          <select class="finput">
+            <option>Cartão de crédito</option>
+            <option>Pix</option>
+            <option>Boleto bancário</option>
+          </select>
+        </div>
+        <button class="submit-btn" onclick="confirmDonate('R$ 25')">Confirmar Doação de R$25</button>
+      </div>
+
+    </div>
+
+    <div class="donate-right">
+      <div class="impact-card">
+        <div class="impact-card-title">📊 Impacto em tempo real</div>
+        <div class="impact-row">
+          <div class="impact-ico">🍽️</div>
+          <div class="impact-info">
+            <div class="impact-title">Refeições servidas</div>
+            <div class="impact-sub">Este mês</div>
+          </div>
+          <div class="impact-val">4.820</div>
+        </div>
+        <div class="impact-row">
+          <div class="impact-ico">👕</div>
+          <div class="impact-info">
+            <div class="impact-title">Peças de roupa doadas</div>
+            <div class="impact-sub">Este mês</div>
+          </div>
+          <div class="impact-val">1.340</div>
+        </div>
+        <div class="impact-row">
+          <div class="impact-ico">👨‍👩‍👧</div>
+          <div class="impact-info">
+            <div class="impact-title">Famílias beneficiadas</div>
+            <div class="impact-sub">Este mês</div>
+          </div>
+          <div class="impact-val">612</div>
+        </div>
+        <div class="impact-row">
+          <div class="impact-ico">🏠</div>
+          <div class="impact-info">
+            <div class="impact-title">ONGs apoiadas</div>
+            <div class="impact-sub">Ativamente</div>
+          </div>
+          <div class="impact-val">247</div>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <div class="trust-title">🔒 Por que confiar no DOE+?</div>
+        <div class="trust-item">
+          <div class="trust-ico">✅</div>
+          <div class="trust-text"><strong>ONGs verificadas:</strong> Apenas projetos legítimos e de impacto comprovado.</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-ico">📊</div>
+          <div class="trust-text"><strong>Relatórios de impacto:</strong> Saiba exatamente como sua doação foi usada.</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-ico">🛡️</div>
+          <div class="trust-text"><strong>Conformidade LGPD:</strong> Seus dados protegidos com segurança total.</div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-ico">🔄</div>
+          <div class="trust-text"><strong>Cancele quando quiser:</strong> Doações recorrentes sem fidelidade obrigatória.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <h2 class="cta-title">Pronto para fazer a <span class="accent">diferença?</span></h2>
+    <p class="cta-desc">Junte-se a mais de 18 mil doadores que já transformaram vidas com o DOE+. Cada doação, por menor que seja, faz parte de algo muito maior.</p>
+    <div class="cta-btns">
+      <a href="#doar" class="btn-primary" style="font-size:16px;padding:18px 40px;">💚 Fazer minha primeira doação</a>
+      <a href="#ongs" class="btn-ghost" style="font-size:16px;padding:18px 40px;">Explorar ONGs →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">DOE+</div>
+      <p class="footer-desc">Conectando doadores a ONGs verificadas em todo o Brasil. Transparência, simplicidade e impacto real.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Plataforma</div>
+      <ul class="footer-links">
+        <li><a href="#">Como funciona</a></li>
+        <li><a href="#">ONGs cadastradas</a></li>
+        <li><a href="#">Fazer doação</a></li>
+        <li><a href="#">Cadastrar ONG</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Empresa</div>
+      <ul class="footer-links">
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Time Capivara</a></li>
+        <li><a href="#">Parceiros</a></li>
+        <li><a href="#">Contato</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <ul class="footer-links">
+        <li><a href="#">Privacidade</a></li>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">LGPD</a></li>
+        <li><a href="#">Segurança</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 DOE+ · Facens — Time Capivara · UPXII</div>
+    <div class="footer-badges">
+      <span class="footer-badge">✅ ONGs verificadas</span>
+      <span class="footer-badge">🔒 LGPD</span>
+      <span class="footer-badge">🇧🇷 Feito no Brasil</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL DOAÇÃO -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-inner">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">💚 Doação confirmada com sucesso!</div>
+
+<script>
+// Nav hamburger
+function toggleMenu() {
+  const links = document.querySelector('.nav-links');
+  links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+  links.style.flexDirection = 'column';
+  links.style.position = 'absolute';
+  links.style.top = '72px'; links.style.left = '0'; links.style.right = '0';
+  links.style.background = 'rgba(13,27,42,0.98)';
+  links.style.padding = '20px';
+}
+
+// Filter ONGs
+function filterOngs(btn, cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ong-card').forEach(card => {
+    const c = card.dataset.cat || '';
+    card.style.display = (cat === 'all' || c.includes(cat)) ? 'block' : 'none';
+  });
+}
+
+// Donate tabs
+function switchTab(btn, tab) {
+  document.querySelectorAll('.dtab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['mat','din'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? 'block' : 'none';
+  });
+}
+
+// Amount selection
+function selectAmt(btn) {
+  btn.closest('.amount-grid').querySelectorAll('.amt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// Open donate modal from ONG card
+function openDonate(ongName) {
+  document.getElementById('ong-select-mat').value = ongName;
+  document.getElementById('ong-select-din').value = ongName;
+  document.getElementById('#doar') && document.querySelector('#doar').scrollIntoView({behavior:'smooth'});
+  document.querySelector('#doar').scrollIntoView({behavior:'smooth'});
+}
+
+// Confirm donate
+function confirmDonate(type) {
+  const modal = document.getElementById('modal');
+  document.getElementById('modal-content').innerHTML = `
+    <div class="success-modal">
+      <div class="success-icon">💚</div>
+      <div class="success-title">Doação confirmada!</div>
+      <p class="success-desc" style="margin-top:12px;">
+        Sua doação de <strong>${type}</strong> foi registrada com sucesso.<br>
+        Você receberá um comprovante e um relatório de impacto em até 30 dias.
+      </p>
+      <div style="background:var(--gray-light);border-radius:14px;padding:16px;margin-top:24px;text-align:left;">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid #ddd;">
+          <span style="color:var(--gray);">Status</span><span style="color:var(--green-dark);font-weight:700;">✅ Confirmado</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;">
+          <span style="color:var(--gray);">Data</span><span style="font-weight:600;">${new Date().toLocaleDateString('pt-BR')}</span>
+        </div>
+      </div>
+      <button class="submit-btn" style="margin-top:24px;" onclick="closeModalDirect()">Fechar</button>
+    </div>
+  `;
+  modal.classList.add('open');
+}
+
+function closeModal(e) {
+  if(e.target === document.getElementById('modal')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal').classList.remove('open');
+  showToast();
+}
+
+// Toast
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Animate progress bars on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.querySelectorAll('.prog-fill').forEach(bar => {
+        bar.style.width = bar.style.width; // trigger reflow
+      });
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.ong-card').forEach(c => observer.observe(c));
+
+// Smooth scroll nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target) { e.preventDefault(); target.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.borderBottomColor = window.scrollY > 50 ? 'rgba(46,204,113,0.1)' : 'rgba(255,255,255,0.06)';
+});
+</script>
+</body>
+</html>
